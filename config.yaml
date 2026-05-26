@@ -1,0 +1,184 @@
+# ShellShark 配置文件
+# WebShell 流量检测分析工具
+
+# 服务器配置
+server:
+  host: "0.0.0.0"
+  port: 8000
+  debug: false
+  reload: false
+  workers: 1
+  log_level: "info"
+
+# 抓包配置
+capture:
+  # 默认网络接口（留空则自动选择最优网卡）
+  default_interface: ""
+  # 接口自动选择策略: first_up / non_loopback / non_virtual / manual
+  interface_auto_select: "non_virtual"
+  # 默认 BPF 过滤器
+  default_filter: "tcp port 80 or tcp port 443 or tcp port 8080 or tcp port 8443"
+  # 最大捕获包数量（0 = 无限制）
+  max_packets: 0
+  # 包缓冲区大小
+  buffer_size: 65536
+  # 抓包超时（秒，0 = 无限制）
+  timeout: 0
+  # PCAP 文件最大大小（MB）
+  max_pcap_size: 500
+  # 分块处理大小（包数量）
+  chunk_size: 1000
+  # 是否保存原始 PCAP
+  save_pcap: true
+  # PCAP 保存目录
+  pcap_dir: "data/pcap"
+  # 接口探测方式: auto / psutil / wmi / scapy / socket
+  interface_probe: "auto"
+
+# 检测引擎配置
+detection:
+  # 威胁评分阈值（0-100）
+  threat_threshold: 60
+  # 高危阈值
+  high_threat_threshold: 80
+  # 是否启用特征检测
+  enable_signature: true
+  # 是否启用行为检测
+  enable_behavior: true
+  # 是否启用熵值检测
+  enable_entropy: true
+  # 熵值阈值（高于此值标记为可疑）
+  entropy_threshold: 7.0
+  # AES 块对齐检测阈值（字节）
+  aes_block_size: 16
+
+# 行为分析配置
+behavior:
+  # 非工作时段定义（小时，24小时制）
+  off_hours_start: 22
+  off_hours_end: 6
+  # 高频连接阈值（每分钟请求数）
+  high_freq_threshold: 30
+  # 心跳检测时间窗口（秒）
+  heartbeat_window: 300
+  # 心跳间隔容差（秒）
+  heartbeat_tolerance: 5
+  # POST 大小异常阈值（字节）
+  large_post_threshold: 102400
+  # 会话超时（秒）
+  session_timeout: 3600
+
+# 解密配置
+decryption:
+  # 冰蝎默认密钥（十六进制）
+  behinder_default_key: "e45e329feb5d925b"
+  # 哥斯拉默认密钥
+  godzilla_default_key: "caidao"
+  # 蚁剑默认密码
+  antsword_default_pass: "ant"
+  # 是否自动尝试解密
+  auto_decrypt: true
+  # 最大解密尝试次数
+  max_decrypt_attempts: 3
+
+# AI 分析配置
+ai:
+  # 默认 AI 提供商 (openai/deepseek/claude/qwen/ernie/ollama)
+  default_provider: "deepseek"
+  # OpenAI 配置
+  openai:
+    api_key: ""
+    base_url: "https://api.openai.com/v1"
+    model: "gpt-4o"
+    max_tokens: 2000
+    temperature: 0.1
+  # DeepSeek 配置（兼容 OpenAI 接口）
+  deepseek:
+    api_key: "sk-612affa53e174e2ba901c5c3f36f45de"
+    base_url: "https://api.deepseek.com"
+    model: "deepseek-chat"
+    max_tokens: 2000
+    temperature: 0.1
+  # Claude 配置
+  claude:
+    api_key: ""
+    model: "claude-3-5-sonnet-20241022"
+    max_tokens: 2000
+  # 通义千问配置
+  qwen:
+    api_key: ""
+    base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    model: "qwen-max"
+    max_tokens: 2000
+  # 文心一言配置
+  ernie:
+    api_key: ""
+    secret_key: ""
+    model: "ernie-4.0-8k"
+  # Ollama 本地配置
+  ollama:
+    base_url: "http://localhost:11434"
+    model: "llama3"
+    max_tokens: 2000
+  # HTTP 代理
+  proxy: ""
+  # 批量分析并发数
+  batch_concurrency: 5
+  # 速率限制（每分钟请求数）
+  rate_limit: 60
+  # 请求超时（秒）
+  timeout: 60
+  # 是否启用 AI 分析
+  enabled: true
+
+# 报告配置
+report:
+  # 报告输出目录
+  output_dir: "data/reports"
+  # 默认报告格式 (jsonl/csv/excel/html)
+  default_format: "html"
+  # HTML 报告模板
+  html_template: "templates/report.html"
+  # 是否包含原始数据
+  include_raw: false
+  # 最大报告记录数
+  max_records: 10000
+
+# 数据库配置（可选，用于持久化）
+database:
+  # 是否启用数据库
+  enabled: false
+  # 数据库 URL
+  url: "sqlite:///data/shellshark.db"
+
+# Redis 配置（用于 Celery 任务队列）
+redis:
+  host: "localhost"
+  port: 6379
+  db: 0
+  password: ""
+
+# 日志配置
+logging:
+  level: "INFO"
+  format: "{time:YYYY-MM-DD HH:mm:ss} | {level} | {name} | {message}"
+  file: "logs/shellshark.log"
+  rotation: "10 MB"
+  retention: "7 days"
+  colorize: true
+
+# WebSocket 配置
+websocket:
+  # 实时推送间隔（毫秒）
+  push_interval: 500
+  # 最大连接数
+  max_connections: 100
+  # 心跳间隔（秒）
+  heartbeat_interval: 30
+
+# 前端配置
+frontend:
+  # 静态文件目录
+  static_dir: "frontend/dist"
+  # 是否启用前端
+  enabled: true
