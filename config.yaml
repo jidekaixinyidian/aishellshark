@@ -94,7 +94,7 @@ ai:
     temperature: 0.1
   # DeepSeek 配置（兼容 OpenAI 接口）
   deepseek:
-    api_key: "sk-612affa53e174e2ba901c5c3f36f45de"
+    api_key: ""
     base_url: "https://api.deepseek.com"
     model: "deepseek-chat"
     max_tokens: 2000
